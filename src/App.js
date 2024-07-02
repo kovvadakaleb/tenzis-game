@@ -1,8 +1,10 @@
 import React from "react"
+import Main from "./Main"
+import "./App.css"
 
 function App(){
   return(
-    <h1>Welcome To React Application</h1>
+   <Main />
   )
 }
 
