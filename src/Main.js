@@ -3,6 +3,7 @@ import Die from "./Die"
 import { nanoid } from "nanoid"
 import Confetti from 'react-confetti'
 import useWindowSize from 'react-use/lib/useWindowSize'
+import diceImages from "./diceImages"
  
 
  export default function Main(){
@@ -14,7 +15,7 @@ import useWindowSize from 'react-use/lib/useWindowSize'
   
 
  useEffect(()=>{
-  console.log("Dice state changed")
+  
   const number = diceArray[0].value
   let win = true
   for(let i=0;i<diceArray.length;i++){
@@ -23,14 +24,21 @@ import useWindowSize from 'react-use/lib/useWindowSize'
     }
   }
   if(win===true){
-    console.log("You win the Game")
     setTenzis(true)
   } 
 
  },[diceArray])  
 
   function generateNewDice(){
-    return {value:Math.floor(Math.random()*6)+1,isHeld:false,id:nanoid()}
+    const number = Math.floor(Math.random()*6)+1
+    let imageLink = ''
+    for(let i=0;i<diceImages.length;i++){
+      if(diceImages[i].id===number){
+        imageLink = diceImages[i].imageLink
+        break
+      }
+    }
+      return {value:number,isHeld:false,id:nanoid(),image:imageLink}
   }
 
   function allNewDice(){
@@ -66,7 +74,7 @@ import useWindowSize from 'react-use/lib/useWindowSize'
   }
 
 
-  const diceElements = diceArray.map(diceObject => <Die key={diceObject.id} value={diceObject.value} isHeld={diceObject.isHeld} holdDice={()=>holdDice(diceObject.id)} />)
+  const diceElements = diceArray.map(diceObject => <Die key={diceObject.id} value={diceObject.value}  isHeld={diceObject.isHeld} image={diceObject.image}  holdDice={()=>holdDice(diceObject.id)} />)
   
   const {width,height} = useWindowSize()
 
