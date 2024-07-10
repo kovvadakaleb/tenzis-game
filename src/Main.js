@@ -4,13 +4,21 @@ import { nanoid } from "nanoid"
 import Confetti from 'react-confetti'
 import useWindowSize from 'react-use/lib/useWindowSize'
 import diceImages from "./diceImages"
+import diceSound from './sounds/dice-sound.wav'
+import winSound from './sounds/winnig-sound.wav'
  
+const winAudio = new Audio(winSound)
+
+const audio = new Audio(diceSound)
 
  export default function Main(){
 
   const [diceArray,setDiceArray] = useState(allNewDice())
 
   const [tenzis,setTenzis] = useState(false)
+
+  const [rollEffect,setRollEffect] = useState(false)
+  
 
   
 
@@ -25,6 +33,10 @@ import diceImages from "./diceImages"
   }
   if(win===true){
     setTenzis(true)
+    
+    winAudio.loop=true
+    winAudio.play()
+   
   } 
 
  },[diceArray])  
@@ -53,17 +65,36 @@ import diceImages from "./diceImages"
 
   function rollDice(){
     if(tenzis){
+
+
       setDiceArray(allNewDice())
       setTenzis(false)
+      
+      winAudio.loop = false
+      winAudio.pause()
+      winAudio.currentTime = 0
     }
-    setDiceArray(oldDice => oldDice.map(dice=>{
-      if(dice.isHeld){
-        return dice
-      }
-      else{
-        return generateNewDice()
-      }
-    }))
+    else{
+        setRollEffect(true)
+
+        
+        audio.currentTime = 0
+        audio.play()
+        setTimeout(()=>{
+
+          setDiceArray(oldDice => oldDice.map(dice=>{
+              if(dice.isHeld){
+              return dice
+              }
+              else{
+              return generateNewDice()
+              }
+          }))
+          audio.pause()
+          setRollEffect(false)
+
+        },1000)
+  }
   }
 
   
@@ -74,7 +105,7 @@ import diceImages from "./diceImages"
   }
 
 
-  const diceElements = diceArray.map(diceObject => <Die key={diceObject.id} value={diceObject.value}  isHeld={diceObject.isHeld} image={diceObject.image}  holdDice={()=>holdDice(diceObject.id)} />)
+  const diceElements = diceArray.map(diceObject => <Die key={diceObject.id} value={diceObject.value}  isHeld={diceObject.isHeld} image={diceObject.image}  holdDice={()=>holdDice(diceObject.id)}  rollEffect={rollEffect} />)
   
   const {width,height} = useWindowSize()
 
