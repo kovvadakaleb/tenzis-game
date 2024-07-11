@@ -6,6 +6,9 @@ body{
   background: rgba(11, 36, 52, 1);
   padding:30px;
   
+}h1,h2,h3,h4,h5,h6{
+  padding:0;
+  display:inline-block;
 }
 
 main{
@@ -79,6 +82,13 @@ main{
     100%{
       transform: rotateY(360deg);
     }
+  }
+
+  .timer{
+    position:absolute;
+    right: 80px;
+    top:70px;
+    font-size:1.2rem;
   }
 
 

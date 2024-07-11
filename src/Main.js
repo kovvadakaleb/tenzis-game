@@ -18,8 +18,38 @@ const audio = new Audio(diceSound)
   const [tenzis,setTenzis] = useState(false)
 
   const [rollEffect,setRollEffect] = useState(false)
+
+  const [timer,setTimer] = useState(0)
+
+  const [hours,setHours] = useState(0)
+
+  const [minutes,setMinutes] = useState(0)
+
+  const [seconds,setSeconds] = useState(0)
   
 
+  useEffect(()=>{
+    let interval;
+    if(!tenzis){
+      interval = setInterval(()=>{
+        setTimer(prevTimer => prevTimer+1)
+      },1000)
+    }
+    return ()=>clearInterval(interval)
+  },[tenzis])
+
+  useEffect(()=>{
+      const hours = Math.floor(timer/3600)
+      const minutes = Math.floor((timer%3600)/60)
+      const seconds = timer%60
+
+      setHours(hours)
+      setMinutes(minutes)
+      setSeconds(seconds)
+
+      
+      
+  },[timer])
   
 
  useEffect(()=>{
@@ -73,6 +103,8 @@ const audio = new Audio(diceSound)
       winAudio.loop = false
       winAudio.pause()
       winAudio.currentTime = 0
+
+      setTimer(0)
     }
     else{
         setRollEffect(true)
@@ -114,12 +146,14 @@ const audio = new Audio(diceSound)
   return (
     <main>
        {tenzis && <Confetti width={width} height={height}/>}
-      <h1 className="title">Tenzis</h1>
-      <p className="details">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
-      <div className="dice-container">
-        {diceElements}
-      </div>
-      <button onClick={rollDice}  className="roll-button">{tenzis?"New Game":"Roll"}</button>
+          <h1 className="title">Tenzis</h1>
+          <div className="timer"><h2>Timer</h2>:{String(hours).padStart(2,'0')}:{String(minutes).padStart(2,'0')}:{String(seconds).padStart(2,'0')}s</div>
+          <p className="details">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
+          <div className="dice-container">
+            {diceElements}
+          </div>
+          <button onClick={rollDice}  className="roll-button">{tenzis?"New Game":"Roll"}</button>
+      
     </main>
     
   )
