@@ -88,10 +88,15 @@ main{
     position:absolute;
     right: 80px;
     top:70px;
-    font-size:1.2rem;
+    font-size:1.3rem;
   }
 
-
+.rolls-no{
+  position:absolute;
+  top:70px;
+  left:80px;
+  font-size:1.3rem;
+}
 
 @media (max-width:575.98px){
       .dice{

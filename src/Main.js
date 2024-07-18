@@ -6,12 +6,22 @@ import useWindowSize from 'react-use/lib/useWindowSize'
 import diceImages from "./diceImages"
 import diceSound from './sounds/dice-sound.wav'
 import winSound from './sounds/winnig-sound.wav'
+
+import CustomModal  from "./CustomModal"
  
+
+
 const winAudio = new Audio(winSound)
 
 const audio = new Audio(diceSound)
 
  export default function Main(){
+
+  
+
+  const lastRecord = JSON.parse(localStorage.getItem('RollCount')) || 10000
+
+  
 
   const [diceArray,setDiceArray] = useState(allNewDice())
 
@@ -26,7 +36,16 @@ const audio = new Audio(diceSound)
   const [minutes,setMinutes] = useState(0)
 
   const [seconds,setSeconds] = useState(0)
+
+  const [turns,setTurns] = useState(0)
+
+  const [modalOpen,setModalOpen] = useState(false)
   
+  const [modalMessage,setModalMessage] = useState('')
+
+  console.log(lastRecord) 
+  
+  console.log(turns)
 
   useEffect(()=>{
     let interval;
@@ -35,6 +54,7 @@ const audio = new Audio(diceSound)
         setTimer(prevTimer => prevTimer+1)
       },1000)
     }
+    
     return ()=>clearInterval(interval)
   },[tenzis])
 
@@ -47,9 +67,7 @@ const audio = new Audio(diceSound)
       setMinutes(minutes)
       setSeconds(seconds)
 
-      
-      
-  },[timer])
+ },[timer])
   
 
  useEffect(()=>{
@@ -66,10 +84,31 @@ const audio = new Audio(diceSound)
     
     winAudio.loop=true
     winAudio.play()
-   
-  } 
 
- },[diceArray])  
+} 
+
+ },[diceArray]) 
+
+ 
+ useEffect(()=>{
+  
+    if(tenzis && turns<lastRecord){
+      
+      localStorage.setItem('RollCount',JSON.stringify(turns))
+      setModal(true)
+      setModalMessage(`Congratulations! You've set a New Record in Tenzis:${turns}`)
+
+    }
+    else if(tenzis){
+      setModal(true)
+      setModalMessage("Congratulations!, You Won The game")
+    }
+  }
+ ,[turns,tenzis,lastRecord])
+ 
+ function setModal(boolean){
+  setModalOpen(boolean)
+ }
 
   function generateNewDice(){
     const number = Math.floor(Math.random()*6)+1
@@ -105,11 +144,10 @@ const audio = new Audio(diceSound)
       winAudio.currentTime = 0
 
       setTimer(0)
+      setTurns(0)
     }
     else{
         setRollEffect(true)
-
-        
         audio.currentTime = 0
         audio.play()
         setTimeout(()=>{
@@ -126,7 +164,11 @@ const audio = new Audio(diceSound)
           setRollEffect(false)
 
         },1000)
+
+    setTurns(prevTurns => prevTurns+1)
+    setModal(false)
   }
+  
   }
 
   
@@ -146,8 +188,10 @@ const audio = new Audio(diceSound)
   return (
     <main>
        {tenzis && <Confetti width={width} height={height}/>}
+       <CustomModal isOpen={modalOpen} onClose={()=>setModal(false)} modalMessage={modalMessage}/>
           <h1 className="title">Tenzis</h1>
           <div className="timer"><h2>Timer</h2>:{String(hours).padStart(2,'0')}:{String(minutes).padStart(2,'0')}:{String(seconds).padStart(2,'0')}s</div>
+          <div className="rolls-no"><h2>Roll counter</h2>:{turns}</div>
           <p className="details">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
           <div className="dice-container">
             {diceElements}
