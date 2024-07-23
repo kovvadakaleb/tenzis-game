@@ -149,7 +149,7 @@ main{
         border-radius:4px;
       }
       .title{
-        font-size:28px;
+        font-size:30px;
         margin:0;
       }
       .details{
@@ -188,10 +188,10 @@ main{
       transform: translate(-50%,-50%);
       width:70%;
       height:12%;
-      font-size: 7px;
+      font-size: 10px;
     }
     .modal-button{
-      font-size: 5px;
+      font-size: 8px;
       padding:4px 12px;
       margin-left:10px;
     }
