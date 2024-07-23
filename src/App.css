@@ -149,7 +149,7 @@ main{
         border-radius:4px;
       }
       .title{
-        font-size:30px;
+        font-size:35px;
         margin:0;
       }
       .details{
@@ -191,9 +191,10 @@ main{
       font-size: 10px;
     }
     .modal-button{
-      font-size: 12px;
+      font-size: 15px;
       padding:4px 12px;
       margin-left:10px;
+      
     }
     
   
